@@ -24,6 +24,8 @@ public class MapFragment extends BaseFragment<MapContract.Presenter> {
     public static final String P1_LAT_LNG = "P1LatLng";
     public static final String P2_LAT_LNG = "P2LatLng";
 
+    private Bundle lastInstantStateSaved;
+
     public static MapFragment getInstance(Coordinate point1, Coordinate point2) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(P1_LAT_LNG, point1);
@@ -37,6 +39,7 @@ public class MapFragment extends BaseFragment<MapContract.Presenter> {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        lastInstantStateSaved = savedInstanceState;
         return inflater.inflate(R.layout.map_fragment_layout, container, false);
     }
 
@@ -47,7 +50,7 @@ public class MapFragment extends BaseFragment<MapContract.Presenter> {
         Coordinate point2 = getArguments().getParcelable(P1_LAT_LNG);
 
         return new MapPresenter(
-                new MapView(getBaseActivity(), BusProvider.getInstance()),
+                new MapView(getBaseActivity(), BusProvider.getInstance(), lastInstantStateSaved),
                 new MapModel(BusProvider.getInstance(), point1, point2));
     }
 
@@ -55,11 +58,42 @@ public class MapFragment extends BaseFragment<MapContract.Presenter> {
     public void onStart() {
         super.onStart();
         BusProvider.register(presenter);
+
     }
 
     @Override
     public void onStop() {
         BusProvider.unregister(presenter);
         super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        presenter.onSaveInstantState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        presenter.onLowMemory();
     }
 }
