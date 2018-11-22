@@ -1,8 +1,6 @@
 package com.mytaxi.app.mvp.model;
 
-import android.support.annotation.IntDef;
-
-import com.mytaxi.app.mvp.contract.RetrofitManager;
+import com.mytaxi.app.mvp.contract.base.RetrofitManager;
 import com.mytaxi.app.restApi.APIClient;
 import com.mytaxi.app.restApi.APIService;
 import com.mytaxi.app.utils.BusProvider;
@@ -12,7 +10,6 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class BaseModel implements RetrofitManager {
 
@@ -42,37 +39,6 @@ public class BaseModel implements RetrofitManager {
 
         /*Clear canceled*/
         cancellableRetrofitCalls.removeAll(toRemove);
-    }
-
-    /**
-     * Using for retrofit callbacks
-     */
-    public static class RetrofitEvent<T> {
-
-        @IntDef({SUCCESS, FAILURE})
-        @interface Result {
-        }
-
-        public static final int SUCCESS = 0;
-        public static final int FAILURE = 1;
-
-        public @Result int status;
-        public Call call;
-        public Response<T> response;
-        public Throwable throwable;
-
-
-        public RetrofitEvent(Call call, Response<T> response) {
-            this.status = SUCCESS;
-            this.call = call;
-            this.response = response;
-        }
-
-        public RetrofitEvent(Call call, Throwable throwable) {
-            this.status = FAILURE;
-            this.call = call;
-            this.throwable = throwable;
-        }
     }
 
     protected void post(Object event) {

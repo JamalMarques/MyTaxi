@@ -1,22 +1,15 @@
 package com.mytaxi.app.restApi;
 
-import com.mytaxi.app.restApi.responses.UsersPaginationResponse;
+import com.mytaxi.app.restApi.responses.VehiclesResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIService {
 
-
-    @GET(APIConstants.URL_USERS_PAGINATION)
-    Call<UsersPaginationResponse> usersPagination(@Query("page") String page, @Query("results") String results, @Query("seed") String seed);
-
-    /*@GET(APIConstants.URL_TOP_RATED)
-    Call<MoviesResponse> getTopRatedMovies(@Query(APIConstants.PARAMETER_API_KEY) String apiKey);
-
-    @GET(APIConstants.URL_GET_MOVIE)
-    Call<MoviesResponse> getMovieDetails(@Path(APIConstants.PARAMETER_API_ID) int id,
-                                         @Query(APIConstants.PARAMETER_API_KEY) String apiKey);*/
-
+    @GET(APIConstants.GET_VEHICLES)
+    Call<VehiclesResponse> getVehiclesInArea(@Query("p1Lat") String latitudeOne, @Query("p1Lon") String longitudeOne,
+                                             @Query("p2Lat") String latitudeTwo, @Query("p2Lon") String longitudeTwo);
 }

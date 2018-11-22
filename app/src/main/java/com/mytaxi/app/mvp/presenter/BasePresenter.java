@@ -1,7 +1,7 @@
 package com.mytaxi.app.mvp.presenter;
 
-import com.mytaxi.app.mvp.contract.PresenterCoreInterface;
-import com.mytaxi.app.mvp.contract.RetrofitManager;
+import com.mytaxi.app.mvp.contract.base.PresenterCoreInterface;
+import com.mytaxi.app.mvp.contract.base.RetrofitManager;
 
 public class BasePresenter<V, M extends RetrofitManager> implements PresenterCoreInterface {
 

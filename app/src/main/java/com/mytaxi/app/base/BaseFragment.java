@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
-import com.mytaxi.app.mvp.contract.PresenterCoreInterface;
+import com.mytaxi.app.mvp.contract.base.PresenterCoreInterface;
 
 public abstract class BaseFragment<P extends PresenterCoreInterface> extends Fragment implements FragmentController<BaseFragment> {
 

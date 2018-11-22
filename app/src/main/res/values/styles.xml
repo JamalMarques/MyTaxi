@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="android:windowBackground">@drawable/splash_screen</item>
         <item name="android:textViewStyle">@style/common_text_style</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
@@ -14,17 +15,10 @@
 
     </style>
 
-    <style name="MyCustomToolBarTheme" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:textColorPrimary">@color/primaryTextColorTitle</item>
-        <item name="android:textColorSecondary">@color/primaryTextColorTitle</item>
-    </style>
-
 
     <!--Text Style Base-->
     <style name="common_text_style">
-        <!-- add stuffs here if needed-->
-        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:fontFamily">@font/regular_font</item>
     </style>
-
 
 </resources>

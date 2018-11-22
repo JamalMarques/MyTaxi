@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.mytaxi.app.R;
 import com.mytaxi.app.base.BaseFragment;
+import com.mytaxi.app.models.Coordinate;
 import com.mytaxi.app.mvp.contract.MapContract;
 import com.mytaxi.app.mvp.model.MapModel;
 import com.mytaxi.app.mvp.presenter.MapPresenter;
@@ -17,21 +18,16 @@ import com.mytaxi.app.utils.BusProvider;
 
 public class MapFragment extends BaseFragment<MapContract.Presenter> {
 
+    public static final String TAG = "MapFragment";
+
     /*Extra data to instance*/
     public static final String P1_LAT_LNG = "P1LatLng";
     public static final String P2_LAT_LNG = "P2LatLng";
 
-    @Override
-    protected MapContract.Presenter getPresenter() {
-        return new MapPresenter(
-                new MapView(getBaseActivity(), BusProvider.getInstance()),
-                new MapModel(BusProvider.getInstance()));
-    }
-
-    public static MapFragment getInstance(String p1LatLng, String p2LatLng) {
+    public static MapFragment getInstance(Coordinate point1, Coordinate point2) {
         Bundle bundle = new Bundle();
-        bundle.putString(P1_LAT_LNG, p1LatLng);
-        bundle.putString(P2_LAT_LNG, p2LatLng);
+        bundle.putParcelable(P1_LAT_LNG, point1);
+        bundle.putParcelable(P2_LAT_LNG, point2);
         MapFragment fragment = new MapFragment();
         fragment.setArguments(bundle);
 
@@ -44,16 +40,26 @@ public class MapFragment extends BaseFragment<MapContract.Presenter> {
         return inflater.inflate(R.layout.map_fragment_layout, container, false);
     }
 
+    @Override
+    protected MapContract.Presenter getPresenter() {
+        /*Read data from arguments*/
+        Coordinate point1 = getArguments().getParcelable(P1_LAT_LNG);
+        Coordinate point2 = getArguments().getParcelable(P1_LAT_LNG);
+
+        return new MapPresenter(
+                new MapView(getBaseActivity(), BusProvider.getInstance()),
+                new MapModel(BusProvider.getInstance(), point1, point2));
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        //BusProvider.register(presenter);
+        BusProvider.register(presenter);
     }
 
     @Override
     public void onStop() {
-        //BusProvider.unregister(presenter);
+        BusProvider.unregister(presenter);
         super.onStop();
     }
 }

@@ -52,6 +52,10 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
+    // Bottom sheet
+    implementation "com.android.support:appcompat-v7:$appCompatVersion"
+    implementation "com.android.support:design:$appCompatVersion"
+
     // retrofit, gson
     implementation 'com.google.code.gson:gson:2.8.1'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'

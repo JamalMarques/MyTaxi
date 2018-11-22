@@ -2,19 +2,4 @@
     <string name="app_name">MyTaxiApp</string>
     <string name="title_main_activity">MyTaxiApp</string>
 
-
-    <!-- ========== Font Names ========= -->
-    <string name="selected_typeface">@string/roboto_medium</string>
-
-    <string name="roboto_medium">fonts/Roboto-Medium.ttf</string>
-    <string name="roboto_condensed_light">fonts/RobotoCondensed-Light.ttf</string>
-    <string name="roboto_condensed_regular">fonts/RobotoCondensed-Regular.ttf</string>
-    <string name="network_error_message">There was an issue with the network</string>
-    <string name="first_name_label">First name:</string>
-    <string name="last_name_label">Last name:</string>
-    <string name="email_label">Email</string>
-    <string name="address_label">Address</string>
-    <string name="pagination_loading_message">Loading...</string>
-    <!-- ==========/ Font Names ============== -->
-
 </resources>
