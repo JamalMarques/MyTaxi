@@ -7,10 +7,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by yamil.marques on 9/9/2018.
- */
-
 public class APIClient {
 
     private static APIService retrofit = null;

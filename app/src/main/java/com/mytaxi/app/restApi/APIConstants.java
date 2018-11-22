@@ -1,9 +1,5 @@
 package com.mytaxi.app.restApi;
 
-/**
- * Created by yamil.marques on 9/9/2018.
- */
-
 public class APIConstants {
 
     //URLS

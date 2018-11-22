@@ -6,10 +6,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-/**
- * Created by yamil.marques on 9/10/2018.
- */
-
 public interface APIService {
 
 

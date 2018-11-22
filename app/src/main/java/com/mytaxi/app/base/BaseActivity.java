@@ -21,9 +21,6 @@ import com.mytaxi.app.R;
 
 import java.lang.reflect.Field;
 
-/**
- * Created by yamil.marques on 1/13/16.
- */
 public abstract class BaseActivity extends AppCompatActivity implements FragmentController<BaseFragment> {
 
     private CoordinatorLayout coordinatorLayout;

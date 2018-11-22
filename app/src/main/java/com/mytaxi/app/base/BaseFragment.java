@@ -8,11 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.mytaxi.app.mvp.contract.PresenterCoreInterface;
-import com.mytaxi.app.mvp.contract.RetrofitManager;
 
-/**
- * Created by yamil.marques on 9/10/2018.
- */
 public abstract class BaseFragment<P extends PresenterCoreInterface> extends Fragment implements FragmentController<BaseFragment> {
 
     protected P presenter;
