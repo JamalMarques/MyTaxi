@@ -2,8 +2,8 @@ package com.mytaxi.app.activities;
 
 import android.os.Bundle;
 
-import com.mytaxi.app.fragments.UsersFragment;
 import com.mytaxi.app.base.BaseActivity;
+import com.mytaxi.app.fragments.UsersFragment;
 
 public class MainActivity extends BaseActivity {
 

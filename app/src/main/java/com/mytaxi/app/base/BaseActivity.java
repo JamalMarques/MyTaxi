@@ -1,25 +1,17 @@
 package com.mytaxi.app.base;
 
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.mytaxi.app.R;
-
-import java.lang.reflect.Field;
 
 public abstract class BaseActivity extends AppCompatActivity implements FragmentController<BaseFragment> {
 
