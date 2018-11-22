@@ -20,7 +20,7 @@
 
         <TableRow>
 
-            <com.fdv.usersapp.customViews.TextViewRegular
+            <com.mytaxi.app.customViews.TextViewRegular
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
@@ -30,7 +30,7 @@
                 android:textColor="@color/gray1_H"
                 android:textSize="@dimen/text_size_huge_3" />
 
-            <com.fdv.usersapp.customViews.TextViewMedium
+            <com.mytaxi.app.customViews.TextViewMedium
                 android:id="@+id/tv_user_first_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
 
         <TableRow android:layout_marginTop="@dimen/spacing_normal">
 
-            <com.fdv.usersapp.customViews.TextViewRegular
+            <com.mytaxi.app.customViews.TextViewRegular
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
@@ -52,7 +52,7 @@
                 android:textColor="@color/gray1_H"
                 android:textSize="@dimen/text_size_huge_3" />
 
-            <com.fdv.usersapp.customViews.TextViewMedium
+            <com.mytaxi.app.customViews.TextViewMedium
                 android:id="@+id/tv_user_last_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fdv.usersapp.customViews.TextViewMedium
+        <com.mytaxi.app.customViews.TextViewMedium
             android:id="@+id/email_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
             app:layout_constraintStart_toEndOf="@+id/iv_email"
             app:layout_constraintTop_toTopOf="@+id/iv_email" />
 
-        <com.fdv.usersapp.customViews.TextViewMedium
+        <com.mytaxi.app.customViews.TextViewMedium
             android:id="@+id/tv_email"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fdv.usersapp.customViews.TextViewMedium
+        <com.mytaxi.app.customViews.TextViewMedium
             android:id="@+id/address_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
             app:layout_constraintStart_toEndOf="@+id/iv_address"
             app:layout_constraintTop_toTopOf="@+id/iv_address" />
 
-        <com.fdv.usersapp.customViews.TextViewMedium
+        <com.mytaxi.app.customViews.TextViewMedium
             android:id="@+id/tv_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

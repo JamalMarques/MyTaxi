@@ -31,7 +31,7 @@
 
         </android.support.v7.widget.CardView>
 
-        <com.fdv.usersapp.customViews.TextViewMedium
+        <com.mytaxi.app.customViews.TextViewMedium
             android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

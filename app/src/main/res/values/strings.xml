@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">UsersApp</string>
-    <string name="title_main_activity">UsersApp</string>
+    <string name="app_name">MyTaxiApp</string>
+    <string name="title_main_activity">MyTaxiApp</string>
 
 
     <!-- ========== Font Names ========= -->
