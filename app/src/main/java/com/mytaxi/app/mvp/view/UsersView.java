@@ -28,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UsersView extends BaseView<BaseActivity> implements UsersContract.View {
+public class UsersView extends BaseView implements UsersContract.View {
 
     @BindView(R.id.et_users)
     public EditText etUsers;
@@ -64,8 +64,6 @@ public class UsersView extends BaseView<BaseActivity> implements UsersContract.V
         super(activity, bus);
 
         ButterKnife.bind(this, activity);
-
-        getActivity().setToolBarTitle(R.string.app_name);
 
         /*Setups*/
         setupSearcher();

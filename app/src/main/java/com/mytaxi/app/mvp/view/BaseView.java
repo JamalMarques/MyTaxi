@@ -9,17 +9,17 @@ import com.mytaxi.app.utils.BusProvider;
 
 import java.lang.ref.WeakReference;
 
-public class BaseView<T extends BaseActivity> {
+public class BaseView {
 
-    private WeakReference<T> activityReference;
+    private WeakReference<BaseActivity> activityReference;
     protected BusProvider.Bus bus;
 
-    public BaseView(T activity, BusProvider.Bus bus) {
+    public BaseView(BaseActivity activity, BusProvider.Bus bus) {
         this.activityReference = new WeakReference<>(activity);
         this.bus = bus;
     }
 
-    public T getActivity() {
+    public BaseActivity getActivity() {
         return this.activityReference.get();
     }
 

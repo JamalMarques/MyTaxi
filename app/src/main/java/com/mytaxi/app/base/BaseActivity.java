@@ -24,13 +24,6 @@ import java.lang.reflect.Field;
 public abstract class BaseActivity extends AppCompatActivity implements FragmentController<BaseFragment> {
 
     private CoordinatorLayout coordinatorLayout;
-    protected Toolbar toolBar;
-    protected CharSequence mTitle;
-    protected TextView tvToolbarTitle;
-
-    public Toolbar getToolBar() {
-        return toolBar;
-    }
 
     public CoordinatorLayout getCoordinatorLayout() {
         return coordinatorLayout;
@@ -38,38 +31,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     public void setCoordinatorLayout(CoordinatorLayout coordinatorLayout) {
         this.coordinatorLayout = coordinatorLayout;
-    }
-
-    public void setToolBarTitle(String title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(title);
-    }
-
-    public TextView getToolbarTextViewTitle() {
-        return tvToolbarTitle;
-    }
-
-    public void setToolBarTitle(@StringRes int title) {
-        mTitle = getString(title);
-        getSupportActionBar().setTitle(title);
-    }
-
-    public void setToolbarVisible(boolean isToolbarVisible) {
-        toolBar.setVisibility((isToolbarVisible) ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        try {
-            Field f = toolBar.getClass().getDeclaredField("mTitleTextView");
-            f.setAccessible(true);
-            tvToolbarTitle = (TextView) f.get(toolBar);
-            Typeface font = Typeface.createFromAsset(this.getAssets(), this.getString(R.string.selected_typeface));
-            tvToolbarTitle.setTypeface(font);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -86,26 +47,16 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
      */
     @Override
     public void setContentView(int layoutResID) {
-        ViewGroup corelayout = (ViewGroup) getLayoutInflater().inflate(R.layout.activity_base_layout, null);
-        FrameLayout contentFrame = corelayout.findViewById(R.id.content_frame);
+        ViewGroup coreLayout = (ViewGroup) getLayoutInflater().inflate(R.layout.activity_base_layout, null);
+        FrameLayout contentFrame = coreLayout.findViewById(R.id.content_frame);
 
         /*Coordinator setup*/
-        setCoordinatorLayout(corelayout.findViewById(R.id.coordinator_layout));
+        setCoordinatorLayout(coreLayout.findViewById(R.id.coordinator_layout));
 
         if (layoutResID != 0) {
             contentFrame.addView(getLayoutInflater().inflate(layoutResID, null));
         }
-        super.setContentView(corelayout);
-
-        /*Toolbar setup*/
-        toolBar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolBar);
-        getSupportActionBar().setTitle(getToolbarTitle());
-    }
-
-    /*Override in child in order to change the title*/
-    protected String getToolbarTitle() {
-        return "";
+        super.setContentView(coreLayout);
     }
 
     @Override

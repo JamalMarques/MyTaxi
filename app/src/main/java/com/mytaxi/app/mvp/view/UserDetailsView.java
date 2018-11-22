@@ -13,7 +13,7 @@ import com.mytaxi.app.utils.TextHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserDetailsView extends BaseView<BaseActivity> implements UserDetailsContract.View {
+public class UserDetailsView extends BaseView implements UserDetailsContract.View {
 
     @BindView(R.id.iv_user)
     public ImageView ivUser;
@@ -34,8 +34,6 @@ public class UserDetailsView extends BaseView<BaseActivity> implements UserDetai
 
     @Override
     public void showUserData(String image, String username, String firstName, String lastName, String email, String address) {
-
-        getActivity().setToolBarTitle(username);
 
         Glide.with(getContext())
                 .load(image)

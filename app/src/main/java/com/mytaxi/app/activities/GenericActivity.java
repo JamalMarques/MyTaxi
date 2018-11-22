@@ -19,9 +19,6 @@ public class GenericActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView();
 
-        /*Default toolbar setup*/
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         loadSpecificFragment(getIntent().getStringExtra(FRAGMENT_TAG));
     }
 

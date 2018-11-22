@@ -49,7 +49,6 @@ public abstract class BaseFragment<P extends PresenterCoreInterface> extends Fra
 
     @Override
     public void changeFragmentContainedNoBackStack(BaseFragment fragment, String TAG) {
-
         getBaseActivity().changeFragmentContainedNoBackStack(fragment, TAG);
     }
 
