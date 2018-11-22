@@ -1,4 +1,4 @@
-package com.basesoft.baseappretro;
+package com.mytaxi.app;
 
 import org.junit.Test;
 
