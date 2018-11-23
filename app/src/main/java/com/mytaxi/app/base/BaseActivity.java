@@ -15,16 +15,6 @@ import com.mytaxi.app.R;
 
 public abstract class BaseActivity extends AppCompatActivity implements FragmentController<BaseFragment> {
 
-    private CoordinatorLayout coordinatorLayout;
-
-    public CoordinatorLayout getCoordinatorLayout() {
-        return coordinatorLayout;
-    }
-
-    public void setCoordinatorLayout(CoordinatorLayout coordinatorLayout) {
-        this.coordinatorLayout = coordinatorLayout;
-    }
-
     /**
      * Method used to set default container
      */
@@ -41,9 +31,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     public void setContentView(int layoutResID) {
         ViewGroup coreLayout = (ViewGroup) getLayoutInflater().inflate(R.layout.activity_base_layout, null);
         FrameLayout contentFrame = coreLayout.findViewById(R.id.content_frame);
-
-        /*Coordinator setup*/
-        setCoordinatorLayout(coreLayout.findViewById(R.id.coordinator_layout));
 
         if (layoutResID != 0) {
             contentFrame.addView(getLayoutInflater().inflate(layoutResID, null));

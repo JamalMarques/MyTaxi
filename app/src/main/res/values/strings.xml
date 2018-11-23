@@ -2,5 +2,11 @@
     <string name="app_name">MyTaxiApp</string>
     <string name="title_main_activity">MyTaxiApp</string>
     <string name="title_activity_maps">Map</string>
+    <string name="error_vehicles_loading_message">We couldn\'t find any vehicle in the zone, please try another</string>
+    <string name="sheet_header_msg_populated">Available vehicles</string>
+    <string name="sheet_header_msg_error">Vehicles not found</string>
+    <string name="sheet_header_msg_loading">Loading vehicles</string>
+    <string name="address_not_found_msg">Address not found</string>
+    <string name="heading">Heading</string>
 
 </resources>

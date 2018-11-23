@@ -2,6 +2,7 @@ package com.mytaxi.app.mvp.presenter;
 
 import android.os.Bundle;
 
+import com.mytaxi.app.models.Vehicle;
 import com.mytaxi.app.mvp.contract.MapContract;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -48,12 +49,35 @@ public class MapPresenter extends BasePresenter<MapContract.View, MapContract.Mo
     }
 
     @Subscribe
-    public void onVehicleInAreaSuccess(MapContract.Model.OnVehiclesInAreaSucess event){
+    public void onMapLoaded(MapContract.View.OnMapLoaded event) {
+        view.setVisibleRegion(model.getLatestBounds());
+    }
+
+    @Subscribe
+    public void onCameraMovedByUser(MapContract.View.OnCameraMovedByUser event) {
+        model.updatePoints(event.getNewBounds());
+        view.setLoadingVehiclesState();
+    }
+
+    @Subscribe
+    public void onVehicleItemClicked(MapContract.View.OnVehicleItemClicked event) {
+        Vehicle vehicle = event.getVehicleCLicked();
+        view.showBannerTopInfo(vehicle/*, model.getReadableAddress(vehicle.getCoordinate().getLatLng())*/);
+    }
+
+    @Subscribe
+    public void onMarkClicked(MapContract.View.OnMarkerClicked event) {
+        Vehicle vehicle = event.getVehicle();
+        view.showBannerTopInfo(vehicle/*, model.getReadableAddress(vehicle.getCoordinate().getLatLng())*/);
+    }
+
+    @Subscribe
+    public void onVehicleInAreaSuccess(MapContract.Model.OnVehiclesInAreaSuccess event) {
         view.refreshVehiclesComponent(event.getVehicles());
     }
 
     @Subscribe
-    public void onVehicleInAreaFail(MapContract.Model.OnVehiclesInAreaFail event){
+    public void onVehicleInAreaFail(MapContract.Model.OnVehiclesInAreaFail event) {
         /*TODO - check what to do here*/
     }
 }

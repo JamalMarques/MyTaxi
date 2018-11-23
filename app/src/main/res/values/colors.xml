@@ -6,6 +6,7 @@
 
     <color name="color_bg_sheet">#f5cd3a</color>
 
+    <!-- Gray scale -->
     <color name="gray1_H">#484641</color>
     <color name="gray2_H">#484641</color>
     <color name="gray3_H">#676767</color>
@@ -16,5 +17,9 @@
     <color name="gray8_H">#AAAAAA</color>
     <color name="gray9_H">#999999</color>
 
+    <!-- Vehicle headings -->
+    <color name="heading_level_1">#0cae01</color>
+    <color name="heading_level_2">#d9ad00</color>
+    <color name="heading_level_3">#da3d3d</color>
 
 </resources>

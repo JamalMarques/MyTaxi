@@ -13,6 +13,7 @@ public class APIClient {
 
     public static final String BASE_URL = APIConstants.BASE_URL;
 
+    /* Singleton instance */
     public static APIService getRetrofitClient() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()

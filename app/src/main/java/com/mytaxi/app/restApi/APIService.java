@@ -10,6 +10,6 @@ import retrofit2.http.Query;
 public interface APIService {
 
     @GET(APIConstants.GET_VEHICLES)
-    Call<VehiclesResponse> getVehiclesInArea(@Query("p1Lat") String latitudeOne, @Query("p1Lon") String longitudeOne,
-                                             @Query("p2Lat") String latitudeTwo, @Query("p2Lon") String longitudeTwo);
+    Call<VehiclesResponse> getVehiclesInArea(@Query("p1Lat") Double latitudeOne, @Query("p1Lon") Double longitudeOne,
+                                             @Query("p2Lat") Double latitudeTwo, @Query("p2Lon") Double longitudeTwo);
 }

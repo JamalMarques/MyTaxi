@@ -1,5 +1,7 @@
 package com.mytaxi.app.restApi.responses;
 
+import android.location.Geocoder;
+
 import com.google.gson.annotations.SerializedName;
 import com.mytaxi.app.models.Coordinate;
 import com.mytaxi.app.models.Vehicle;
@@ -7,27 +9,27 @@ import com.mytaxi.app.models.Vehicle;
 public class VehicleResponse {
 
     @SerializedName("id")
-    private String id;
+    private int id;
     @SerializedName("coordinate")
-    private Coordinate coordinate;
+    private CoordinateResponse coordinate;
     @SerializedName("fleetType")
     private String fleetType;
     @SerializedName("heading")
-    private String heading;
+    private Double heading;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Coordinate getCoordinate() {
+    public CoordinateResponse getCoordinate() {
         return coordinate;
     }
 
-    public void setCoordinate(Coordinate coordinate) {
+    public void setCoordinate(CoordinateResponse coordinate) {
         this.coordinate = coordinate;
     }
 
@@ -39,15 +41,15 @@ public class VehicleResponse {
         this.fleetType = fleetType;
     }
 
-    public String getHeading() {
+    public Double getHeading() {
         return heading;
     }
 
-    public void setHeading(String heading) {
+    public void setHeading(Double heading) {
         this.heading = heading;
     }
 
     public Vehicle toModel(){
-        return new Vehicle(id, coordinate, fleetType, heading);
+        return new Vehicle(id, coordinate.toModel(), fleetType, heading, "");
     }
 }

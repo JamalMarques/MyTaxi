@@ -1,7 +1,11 @@
 package com.mytaxi.app.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,10 +19,12 @@ import com.mytaxi.app.R;
 import com.mytaxi.app.listeners.RecyclerViewListener;
 import com.mytaxi.app.models.Vehicle;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.ViewHolder> {
+
+    private final int HEADING_LEVEL_1_MAX = 100;
+    private final int HEADING_LEVEL_2_MAX = 200;
 
     private Context context;
     private int lastPositionAnimated = -1;
@@ -46,7 +52,6 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -59,11 +64,14 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Vehicle vehicle = vehiclesList.get(position);
 
-        holder.tvUserName.setText(vehicle.getId());
+        holder.tvVehicleFleetType.setText(vehicle.getFleetType());
+        holder.tvAddress.setText(vehicle.getAddress());
 
-        /*Glide.with(context)
-                .load(user.getPicture().getThumbnail())
-                .into(holder.ivUser);*/
+        /*Heading*/
+        Double heading = vehicle.getHeading();
+        @ColorRes int colorRes = (heading < HEADING_LEVEL_1_MAX) ? R.color.heading_level_1 :
+                (heading < HEADING_LEVEL_2_MAX) ? R.color.heading_level_2 : R.color.heading_level_3;
+        holder.headingState.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, colorRes)));
 
         setAnimation(holder.cardLayout, position);
     }
@@ -76,13 +84,19 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         CardView cardLayout;
-        TextView tvUserName;
+        TextView tvVehicleFleetType;
+        TextView tvHeadingMsg;
+        AppCompatImageView headingState;
+        TextView tvAddress;
 
         public ViewHolder(View itemView, RecyclerViewListener listener) {
             super(itemView);
 
             cardLayout = itemView.findViewById(R.id.card_layout);
-            tvUserName = itemView.findViewById(R.id.tv_vehicle_id);
+            tvVehicleFleetType = itemView.findViewById(R.id.tv_vehicle_fleettype);
+            tvHeadingMsg = itemView.findViewById(R.id.tv_heading_msg);
+            headingState = itemView.findViewById(R.id.view_heading);
+            tvAddress = itemView.findViewById(R.id.tv_vehicle_address);
 
             cardLayout.setOnClickListener(v -> {
                 if (listener != null)

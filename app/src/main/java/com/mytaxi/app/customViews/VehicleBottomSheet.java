@@ -1,12 +1,17 @@
 package com.mytaxi.app.customViews;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.mytaxi.app.R;
 import com.mytaxi.app.adapters.VehiclesAdapter;
 import com.mytaxi.app.listeners.RecyclerViewListener;
@@ -17,8 +22,20 @@ import java.util.List;
 
 public class VehicleBottomSheet extends LinearLayout {
 
+    private TextView tvHeader;
     private RecyclerView recyclerView;
     private VehiclesAdapter adapter;
+    private LinearLayout sheetLayout, sheetHeader, errorLayout;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private LottieAnimationView loadingAnimationView;
+
+    public static final int DATA_STATE_POPULATED = 0;
+    public static final int DATA_STATE_ERROR = 1;
+    public static final int DATA_STATE_LOADING = 2;
+
+    @IntDef({DATA_STATE_POPULATED, DATA_STATE_ERROR, DATA_STATE_LOADING})
+    @interface DataState {
+    }
 
     public VehicleBottomSheet(Context context) {
         super(context);
@@ -44,17 +61,71 @@ public class VehicleBottomSheet extends LinearLayout {
     private void init(Context context) {
         inflate(context, R.layout.bottom_sheet_layout, this);
 
+        /*Components*/
+        tvHeader = findViewById(R.id.tv_message);
+        loadingAnimationView = findViewById(R.id.error_animation_view);
+        errorLayout = findViewById(R.id.error_layout);
+
+        /*Sheet setup*/
+        sheetHeader = findViewById(R.id.sheet_header);
+        sheetLayout = findViewById(R.id.sheet_layout);
+        bottomSheetBehavior = BottomSheetBehavior.from(sheetLayout);
+
+        /*Recycler setup*/
         recyclerView = findViewById(R.id.rv_vehicles);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         adapter = new VehiclesAdapter(context, new ArrayList<>());
         recyclerView.setAdapter(adapter);
     }
 
-    public void refreshVehicles(List<Vehicle> vehiclesList){
+    public void refreshVehicles(@NonNull List<Vehicle> vehiclesList) {
         adapter.refreshItems(vehiclesList);
+        setDataState((vehiclesList.size() > 0) ? DATA_STATE_POPULATED : DATA_STATE_ERROR);
     }
 
-    public void setRecyclerListener(RecyclerViewListener<Vehicle> listener){
+    public void setRecyclerListener(@NonNull RecyclerViewListener<Vehicle> listener) {
         adapter.setListener(listener);
+    }
+
+    public @BottomSheetBehavior.State
+    int getSheetState() {
+        return bottomSheetBehavior.getState();
+    }
+
+    public void setSheetState(final @BottomSheetBehavior.State int state) {
+        bottomSheetBehavior.setState(state);
+    }
+
+    public void setOnHeaderClicked(@NonNull OnClickListener listener) {
+        sheetHeader.setOnClickListener(listener);
+    }
+
+    public void setOnListItemClicked(RecyclerViewListener<Vehicle> listener) {
+        adapter.setListener(listener);
+    }
+
+    public void setDataState(@DataState int dataState) {
+        switch (dataState) {
+            case DATA_STATE_POPULATED:
+                recyclerView.setVisibility(VISIBLE);
+                errorLayout.setVisibility(GONE);
+                loadingAnimationView.setVisibility(GONE);
+                tvHeader.setText(getContext().getString(R.string.sheet_header_msg_populated));
+                break;
+
+            case DATA_STATE_ERROR:
+                recyclerView.setVisibility(GONE);
+                errorLayout.setVisibility(VISIBLE);
+                loadingAnimationView.setVisibility(GONE);
+                tvHeader.setText(getContext().getString(R.string.sheet_header_msg_error));
+                break;
+
+            case DATA_STATE_LOADING:
+                recyclerView.setVisibility(GONE);
+                errorLayout.setVisibility(GONE);
+                loadingAnimationView.setVisibility(VISIBLE);
+                tvHeader.setText(getContext().getString(R.string.sheet_header_msg_loading));
+                break;
+        }
     }
 }

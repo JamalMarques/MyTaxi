@@ -3,39 +3,37 @@ package com.mytaxi.app.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
+import com.google.android.gms.maps.model.LatLng;
 
 public class Coordinate implements Parcelable {
 
-    @SerializedName("latitude")
-    private String latitude;
-    @SerializedName("longitude")
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
 
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public Coordinate(String latitude, String longitude){
+    public Coordinate(Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
     protected Coordinate(Parcel in) {
-        latitude = in.readString();
-        longitude = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
     }
 
     public static final Creator<Coordinate> CREATOR = new Creator<Coordinate>() {
@@ -57,12 +55,16 @@ public class Coordinate implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(latitude);
-        dest.writeString(longitude);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
     }
 
     @Override
     public String toString() {
-        return latitude+","+longitude;
+        return latitude + "," + longitude;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(latitude, longitude);
     }
 }

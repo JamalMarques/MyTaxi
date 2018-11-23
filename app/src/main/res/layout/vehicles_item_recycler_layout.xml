@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_layout"
     android:layout_width="match_parent"
     android:layout_height="60dp"
@@ -12,23 +12,55 @@
     app:cardCornerRadius="@dimen/item_card_corner_radius"
     app:cardElevation="@dimen/item_card_elevation">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/spacing_small"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal">
 
         <TextView
-            android:id="@+id/tv_vehicle_id"
+            android:id="@+id/tv_vehicle_fleettype"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:gravity="center|top"
-            android:text="Vehicle ID"
             android:fontFamily="@font/medium_font"
-            android:textColor="@android:color/black" />
+            android:gravity="center|top"
+            android:maxLines="1"
+            android:text="Taxi"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_heading_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/heading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/view_heading"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/heading_bg"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_vehicle_fleettype"
+            app:layout_constraintEnd_toStartOf="@+id/tv_heading_msg"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_vehicle_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_vehicle_fleettype"
+            android:text="Address name"/>
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

@@ -1,6 +1,9 @@
 package com.mytaxi.app.fragments;
 
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -16,6 +19,8 @@ import com.mytaxi.app.mvp.presenter.MapPresenter;
 import com.mytaxi.app.mvp.view.MapView;
 import com.mytaxi.app.utils.BusProvider;
 
+import java.util.Locale;
+
 public class MapFragment extends BaseFragment<MapContract.Presenter> {
 
     public static final String TAG = "MapFragment";
@@ -26,13 +31,31 @@ public class MapFragment extends BaseFragment<MapContract.Presenter> {
 
     private Bundle lastInstantStateSaved;
 
-    public static MapFragment getInstance(Coordinate point1, Coordinate point2) {
+    /**
+     * Fragment instance to center on specific coordinate
+     *
+     * @param startingCoordinate specific latitude and longitude for starting map
+     */
+    public static MapFragment getInstance(Coordinate startingCoordinate) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(P1_LAT_LNG, point1);
-        bundle.putParcelable(P2_LAT_LNG, point2);
+        bundle.putParcelable(P1_LAT_LNG, startingCoordinate);
         MapFragment fragment = new MapFragment();
         fragment.setArguments(bundle);
+        return fragment;
+    }
 
+    /**
+     * Fragment instance to center on specific area based on coordinate points
+     *
+     * @param northEast north east point
+     * @param southWest south west point
+     */
+    public static MapFragment getInstance(Coordinate northEast, Coordinate southWest) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(P1_LAT_LNG, northEast);
+        bundle.putParcelable(P2_LAT_LNG, southWest);
+        MapFragment fragment = new MapFragment();
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -45,13 +68,19 @@ public class MapFragment extends BaseFragment<MapContract.Presenter> {
 
     @Override
     protected MapContract.Presenter getPresenter() {
-        /*Read data from arguments*/
-        Coordinate point1 = getArguments().getParcelable(P1_LAT_LNG);
-        Coordinate point2 = getArguments().getParcelable(P1_LAT_LNG);
-
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         return new MapPresenter(
                 new MapView(getBaseActivity(), BusProvider.getInstance(), lastInstantStateSaved),
-                new MapModel(BusProvider.getInstance(), point1, point2));
+                getArguments().getParcelable(P2_LAT_LNG) == null ?
+                        new MapModel(BusProvider.getInstance(),
+                                new Handler(Looper.getMainLooper()),
+                                getArguments().getParcelable(P1_LAT_LNG),
+                                geocoder) :
+                        new MapModel(BusProvider.getInstance(),
+                                new Handler(Looper.getMainLooper()),
+                                getArguments().getParcelable(P1_LAT_LNG),
+                                getArguments().getParcelable(P2_LAT_LNG),
+                                geocoder));
     }
 
     @Override

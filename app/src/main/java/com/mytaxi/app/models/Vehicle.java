@@ -2,23 +2,25 @@ package com.mytaxi.app.models;
 
 public class Vehicle {
 
-    private String id;
+    private int id;
     private Coordinate coordinate;
     private String fleetType;
-    private String heading;
+    private Double heading;
+    private String address;
 
-    public Vehicle(String id, Coordinate coordinate, String fleetType, String heading) {
+    public Vehicle(int id, Coordinate coordinate, String fleetType, Double heading, String address) {
         this.id = id;
         this.coordinate = coordinate;
         this.fleetType = fleetType;
         this.heading = heading;
+        this.address = address;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -38,11 +40,40 @@ public class Vehicle {
         this.fleetType = fleetType;
     }
 
-    public String getHeading() {
+    public Double getHeading() {
         return heading;
     }
 
-    public void setHeading(String heading) {
+    public void setHeading(Double heading) {
         this.heading = heading;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+
+        Vehicle vehicle = (Vehicle) obj;
+        return vehicle.getId() == id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.valueOf(id);
+    }
+
+    public boolean isTaxi(){
+        return fleetType.equalsIgnoreCase("Taxi");
     }
 }

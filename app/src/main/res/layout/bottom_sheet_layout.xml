@@ -1,40 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/bottom_sheet_expanded_height"
-    android:orientation="vertical"
-    android:layout_marginTop="@dimen/spacing_small"
-    android:layout_marginLeft="@dimen/spacing_normal"
-    android:layout_marginRight="@dimen/spacing_normal"
-    android:background="@drawable/bottom_sheet_background"
-    android:elevation="@dimen/bottom_sheet_elevation">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/sheet_header"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/sheet_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_sheet_header_height"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/bottom_sheet_expanded_height"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:background="@drawable/bottom_sheet_background"
+        android:elevation="@dimen/bottom_sheet_elevation"
+        android:orientation="vertical"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="@dimen/bottom_sheet_header_height"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-        <TextView
-            android:id="@+id/tv_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Available vehicles" />
+        <LinearLayout
+            android:id="@+id/sheet_header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_sheet_header_height"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <ProgressBar
-            android:id="@+id/pg_loading"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="@dimen/spacing_normal" />
+            <TextView
+                android:id="@+id/tv_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/medium_font"
+                android:textColor="@color/gray3_H"
+                android:textSize="@dimen/text_size_big" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_vehicles"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small" />
+
+        <LinearLayout
+            android:id="@+id/error_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@mipmap/ic_launcher_round" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:text="@string/error_vehicles_loading_message" />
+
+        </LinearLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/error_animation_view"
+            android:layout_width="@dimen/sheet_loading_anim_size"
+            android:layout_height="@dimen/sheet_loading_anim_size" />
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_vehicles"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"/>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
