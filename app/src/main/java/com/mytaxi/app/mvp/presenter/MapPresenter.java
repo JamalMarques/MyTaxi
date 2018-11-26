@@ -34,8 +34,9 @@ public class MapPresenter extends BasePresenter<MapContract.View, MapContract.Mo
     }
 
     @Override
-    public void destroy() {
+    public void onDestroy() {
         view.onDestroyMap();
+        super.onDestroy();
     }
 
     @Override
@@ -56,19 +57,38 @@ public class MapPresenter extends BasePresenter<MapContract.View, MapContract.Mo
     @Subscribe
     public void onCameraMovedByUser(MapContract.View.OnCameraMovedByUser event) {
         model.updatePoints(event.getNewBounds());
+        view.showBannerTopDefault();
         view.setLoadingVehiclesState();
     }
 
     @Subscribe
-    public void onVehicleItemClicked(MapContract.View.OnVehicleItemClicked event) {
-        Vehicle vehicle = event.getVehicleCLicked();
-        view.showBannerTopInfo(vehicle/*, model.getReadableAddress(vehicle.getCoordinate().getLatLng())*/);
+    public void onMarkClicked(MapContract.View.OnMarkerClicked event) {
+        Vehicle vehicle = model.getVehicleFromMarker(event.getMarker());
+        if (vehicle.getAddress() == null) {
+            model.obtainReadableAddress(vehicle);
+        }
+        view.showBannerTopInfo(vehicle, true);
     }
 
     @Subscribe
-    public void onMarkClicked(MapContract.View.OnMarkerClicked event) {
-        Vehicle vehicle = event.getVehicle();
-        view.showBannerTopInfo(vehicle/*, model.getReadableAddress(vehicle.getCoordinate().getLatLng())*/);
+    public void onAddressObtained(MapContract.Model.OnAddressObtained event) {
+        view.showBannerTopInfo(event.getVehicleUpdated(), false);
+    }
+
+    @Subscribe
+    public void onBottomSheetItemClicked(MapContract.View.OnBottomSheetVehicleClicked event) {
+        Vehicle vehicle = event.getVehicleClicked();
+        if (vehicle.getAddress() == null) {
+            model.obtainReadableAddress(vehicle);
+        }
+        view.showBannerTopInfo(vehicle, true);
+        view.animateCameraToMarker(model.getMarkerFromVehicle(event.getVehicleClicked()));
+    }
+
+    @Subscribe
+    public void onRequestNewMarkers(MapContract.Model.OnRequestNewMarkers event) {
+        model.addVehicles(view.generateMapMarkers(event.getVehicles()));
+        view.refreshVehiclesComponent(model.getCurrentVehicles());
     }
 
     @Subscribe

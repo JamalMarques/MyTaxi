@@ -1,9 +1,6 @@
 package com.mytaxi.app.restApi.responses;
 
-import android.location.Geocoder;
-
 import com.google.gson.annotations.SerializedName;
-import com.mytaxi.app.models.Coordinate;
 import com.mytaxi.app.models.Vehicle;
 
 public class VehicleResponse {
@@ -49,7 +46,7 @@ public class VehicleResponse {
         this.heading = heading;
     }
 
-    public Vehicle toModel(){
-        return new Vehicle(id, coordinate.toModel(), fleetType, heading, "");
+    public Vehicle toModel() {
+        return new Vehicle(id, coordinate.toModel(), fleetType, heading, null);
     }
 }

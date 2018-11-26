@@ -5,7 +5,6 @@ import android.support.design.widget.BottomSheetBehavior;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -18,8 +17,7 @@ import com.mytaxi.app.models.Vehicle;
 import com.mytaxi.app.mvp.contract.MapContract;
 import com.mytaxi.app.utils.BusProvider;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,6 @@ public class MapView extends BaseView implements MapContract.View {
     @BindView(R.id.top_banner) TopBanner topBanner;
 
     private GoogleMap googleMap;
-    private HashMap<Vehicle, Marker> currentMarkers = new HashMap<>();
     private int lastMovedReason = -1;
 
     public MapView(BaseActivity activity, BusProvider.Bus bus, Bundle savedInstantState) {
@@ -56,22 +53,15 @@ public class MapView extends BaseView implements MapContract.View {
 
 
     private void prepareBottomSheet() {
-        bottomSheet.setOnHeaderClicked(v -> {
-            bottomSheet.setSheetState((bottomSheet.getSheetState() == BottomSheetBehavior.STATE_COLLAPSED) ?
-                    BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED);
-        });
+        bottomSheet.setOnHeaderClicked(v ->
+                bottomSheet.setSheetState((bottomSheet.getSheetState() == BottomSheetBehavior.STATE_COLLAPSED) ?
+                BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
 
-        bottomSheet.setOnListItemClicked((view, position, vehicle) -> {
-            /*Moving camera & showing marker's window info*/
-            lastMovedReason = GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION;
-            Marker marker = currentMarkers.get(vehicle);
-            marker.showInfoWindow();
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
-            post(new OnVehicleItemClicked(vehicle));
-        });
+        bottomSheet.setOnListItemClicked((view, position, vehicle) -> post(new OnBottomSheetVehicleClicked(vehicle)));
     }
 
     private void prepareMapListeners(GoogleMap googleMap) {
+
         /*Camera idle*/
         googleMap.setOnCameraIdleListener(() -> {
             /*Send event only if was moved by the user or certain dev animations*/
@@ -82,6 +72,7 @@ public class MapView extends BaseView implements MapContract.View {
             /*Reset state for next call*/
             lastMovedReason = -1;
         });
+
         /*Camera movement*/
         googleMap.setOnCameraMoveStartedListener(reason -> {
             /*View modifications*/
@@ -92,16 +83,11 @@ public class MapView extends BaseView implements MapContract.View {
                 lastMovedReason = reason;
             }
         });
+
         /*Marker listener*/
         googleMap.setOnMarkerClickListener(marker -> {
-            for (Map.Entry<Vehicle, Marker> entry : currentMarkers.entrySet()) {
-                if (entry.getValue().getId().equals(marker.getId())) {
-                    post(new OnMarkerClicked(entry.getKey()));
-                    break;
-                }
-            }
-            /*Always return false to keep default functionality
-             * of focus+zoom*/
+            post(new OnMarkerClicked(marker));
+            /*Always return false to keep default functionality of focus+zoom*/
             return false;
         });
     }
@@ -143,63 +129,8 @@ public class MapView extends BaseView implements MapContract.View {
 
     @Override
     public void refreshVehiclesComponent(List<Vehicle> vehiclesList) {
-        /* Clear markers
-         * Only new markers are going to be created, already existent
-         * ones will be untouched and repositioned if needed to improve rendering of not changed markers
-         *
-         * Note: in the current implementation this advantage is not appreciated due that the mock API always returns
-         *          random data with different vehicles no matter what.
-         * */
-        DecimalFormat df = new DecimalFormat(".######");
-        List<Vehicle> vehiclesToAdd = new ArrayList<>(vehiclesList);
-        List<Vehicle> markersToRemove = new ArrayList<>();
-        for (Map.Entry<Vehicle, Marker> entry : currentMarkers.entrySet()) {
-            boolean foundStored = false;
-            if (vehiclesToAdd.contains(entry.getKey())) {
-                foundStored = true;
-
-                /*Find vehicle updated*/
-                for (Vehicle vehicleUpdatedCoords : vehiclesToAdd) {
-                    if (vehicleUpdatedCoords.equals(entry.getKey())) {
-
-                        /*Update coordinates if needed */
-                        Marker storedMarker = entry.getValue();
-                        if (!df.format(storedMarker.getPosition().latitude).equals(df.format(vehicleUpdatedCoords.getCoordinate().getLatitude())) ||
-                                !df.format(storedMarker.getPosition().longitude).equals(df.format(vehicleUpdatedCoords.getCoordinate().getLongitude()))) {
-                            /*Coordinates updated*/
-                            storedMarker.setPosition(vehicleUpdatedCoords.getCoordinate().getLatLng());
-                        }
-                        break;
-                    }
-                }
-            }
-
-            if (foundStored) {
-                /*Vehicle found stored - remove from list to new markers*/
-                vehiclesToAdd.remove(entry.getKey());
-            } else {
-                /*Vehicle no longer visible in area - so remove it*/
-                markersToRemove.add(entry.getKey());
-            }
-        }
-
-        /*Delete outdated vehicles*/
-        for (Vehicle vehicle : markersToRemove) {
-            currentMarkers.get(vehicle).remove();
-            currentMarkers.remove(vehicle);
-        }
-
-        /*Adding markers*/
-        for (Vehicle vehicle : vehiclesToAdd) {
-            currentMarkers.put(
-                    vehicle,
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(vehicle.getCoordinate().getLatLng())
-                            .title(vehicle.getFleetType())
-                            .icon(BitmapDescriptorFactory.fromResource((vehicle.isTaxi())? R.drawable.marker_taxi : R.drawable.marker_pooling))));
-        }
-
-        /* Refreshing Sheet */
+        /* Refreshing Sheet + sorting by heading */
+        Collections.sort(vehiclesList, ((o1, o2) -> o1.getHeading().compareTo(o2.getHeading())));
         bottomSheet.refreshVehicles(vehiclesList);
     }
 
@@ -214,13 +145,31 @@ public class MapView extends BaseView implements MapContract.View {
     }
 
     @Override
-    public void setErrorVehiclesState() {
-        bottomSheet.setDataState(VehicleBottomSheet.DATA_STATE_ERROR);
+    public Map<Vehicle, Marker> generateMapMarkers(List<Vehicle> newVehicles) {
+        /*Adding markers*/
+        HashMap<Vehicle, Marker> map = new HashMap<>();
+        for (Vehicle vehicle : newVehicles) {
+            map.put(
+                    vehicle,
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(vehicle.getCoordinate().getLatLng())
+                            .title(vehicle.getFleetType())
+                            .icon(BitmapDescriptorFactory.fromResource((vehicle.isTaxi()) ? R.drawable.marker_taxi : R.drawable.marker_pooling))));
+        }
+        return map;
     }
 
     @Override
-    public LatLngBounds getVisibleRegion() {
-        return googleMap.getProjection().getVisibleRegion().latLngBounds;
+    public void animateCameraToMarker(Marker marker) {
+        /*Moving camera & showing marker's window info*/
+        lastMovedReason = GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION;
+        marker.showInfoWindow();
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
+    }
+
+    @Override
+    public void setErrorVehiclesState() {
+        bottomSheet.setDataState(VehicleBottomSheet.DATA_STATE_ERROR);
     }
 
     @Override
@@ -229,8 +178,8 @@ public class MapView extends BaseView implements MapContract.View {
     }
 
     @Override
-    public void showBannerTopInfo(Vehicle vehicle) {
-        topBanner.setVehicleState(vehicle);
+    public void showBannerTopInfo(Vehicle vehicle, boolean animate) {
+        topBanner.setVehicleState(vehicle, animate);
     }
 
 }

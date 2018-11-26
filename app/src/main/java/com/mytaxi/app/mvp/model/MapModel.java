@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.mytaxi.app.models.Coordinate;
 import com.mytaxi.app.models.Vehicle;
 import com.mytaxi.app.mvp.contract.MapContract;
@@ -16,9 +17,14 @@ import com.mytaxi.app.utils.BusProvider;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,8 +33,11 @@ import retrofit2.Response;
 public class MapModel extends BaseModel implements MapContract.Model {
 
     private LatLngBounds latestBounds;
+    private HashMap<Vehicle, Marker> currentMarkers = new HashMap<>();
     private Geocoder geocoder;
     private Handler uiHandler;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private Future addressCallRunning;
 
     /* Constructor used in case of one point coordinates needed */
     public MapModel(BusProvider.Bus bus, Handler uiHandler, @NonNull Coordinate startingCoordinate, @NonNull Geocoder geocoder) {
@@ -55,6 +64,36 @@ public class MapModel extends BaseModel implements MapContract.Model {
         return latestBounds;
     }
 
+    /**
+     * Adding new markers to the map
+     *
+     * @param newVehiclesMap new markers with it's markers associated
+     */
+    @Override
+    public void addVehicles(Map<Vehicle, Marker> newVehiclesMap) {
+        currentMarkers.putAll(newVehiclesMap);
+    }
+
+    @Override
+    public List<Vehicle> getCurrentVehicles() {
+        return new ArrayList<>(currentMarkers.keySet());
+    }
+
+    @Override
+    public Vehicle getVehicleFromMarker(Marker marker) {
+        for (Map.Entry<Vehicle, Marker> entry : currentMarkers.entrySet()) {
+            if (entry.getValue().getId().equals(marker.getId())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Marker getMarkerFromVehicle(Vehicle vehicle) {
+        return currentMarkers.get(vehicle);
+    }
+
     @Override
     public void updatePoints(@NonNull LatLngBounds latLngBounds) {
         this.latestBounds = latLngBounds;
@@ -62,14 +101,17 @@ public class MapModel extends BaseModel implements MapContract.Model {
     }
 
     @Override
-    public String getReadableAddress(LatLng coordinates) {
-        /*Address generator*/
-        try {
-            List<Address> addresses = geocoder.getFromLocation(coordinates.latitude, coordinates.longitude, 1);
-            return addresses.get(0).getThoroughfare() + "," + addresses.get(0).getFeatureName();
-        } catch (IOException e) {
-            return null;
+    public void obtainReadableAddress(Vehicle vehicle) {
+        if (addressCallRunning != null && !addressCallRunning.isDone()){
+            addressCallRunning.cancel(true);
         }
+
+        addressCallRunning = executor.submit(new AddressProcessor(uiHandler, geocoder, vehicle, vehicle1 -> {
+            Marker marker = currentMarkers.get(vehicle1);
+            currentMarkers.put(vehicle1, marker);
+            addressCallRunning = null;
+            post(new OnAddressObtained(vehicle1));
+        }));
     }
 
     private void getVehiclesInArea(LatLngBounds latLngBounds) {
@@ -83,19 +125,7 @@ public class MapModel extends BaseModel implements MapContract.Model {
                     @Override
                     public void onResponse(Call<VehiclesResponse> call, Response<VehiclesResponse> response) {
                         if (response != null && response.body() != null && response.body().getVehicles() != null) {
-                            List<Vehicle> vehiclesModelList = new ArrayList<>();
-                            for (VehicleResponse vehicle : response.body().getVehicles()) {
-                                //Vehicle vehicleModel = vehicle.toModel();
-                                //vehicleModel.setAddress(getReadableAddress(vehicleModel.getCoordinate().getLatLng()));
-                                vehiclesModelList.add(vehicle.toModel());
-                            }
-                            Collections.sort(vehiclesModelList, ((o1, o2) -> o1.getHeading().compareTo(o2.getHeading())));
-                            post(new OnVehiclesInAreaSuccess(vehiclesModelList));
-
-                            /*new VehiclesProcessor(uiHandler, geocoder,
-                                    response.body().getVehicles(),
-                                    vehiclesList -> post(new OnVehiclesInAreaSuccess(vehiclesList)))
-                                    .start();*/
+                            syncData(response.body().getVehicles());
                         } else {
                             onFailure(call, new Exception("Null data"));
                         }
@@ -108,47 +138,99 @@ public class MapModel extends BaseModel implements MapContract.Model {
                 }, true);
     }
 
-    private static class VehiclesProcessor extends Thread {
+    /**
+     * This method will sync markers-vehicles data
+     * Only new markers are going to be created, already existent ones will be untouched and repositioned if needed
+     * in order to improve rendering of not changed markers.
+     * <p>
+     * Note: in the current implementation this advantage is not appreciated due that the mock API always returns
+     * random data with different vehicles no matter what.
+     *
+     * @param vehiclesResponse new or updated vehicles to process.
+     */
+    private void syncData(List<VehicleResponse> vehiclesResponse) {
+        List<Vehicle> vehiclesModelList = new ArrayList<>();
+        for (VehicleResponse vehicle : vehiclesResponse) {
+            vehiclesModelList.add(vehicle.toModel());
+        }
+
+        DecimalFormat df = new DecimalFormat(".######");
+        List<Vehicle> vehiclesToAdd = new ArrayList<>(vehiclesModelList);
+        List<Vehicle> markersToRemove = new ArrayList<>();
+        for (Map.Entry<Vehicle, Marker> entry : currentMarkers.entrySet()) {
+            boolean foundStored = false;
+            if (vehiclesToAdd.contains(entry.getKey())) {
+                foundStored = true;
+
+                /*Find vehicle updated*/
+                for (Vehicle vehicleUpdatedCoords : vehiclesToAdd) {
+                    if (vehicleUpdatedCoords.equals(entry.getKey())) {
+
+                        /*Update coordinates if needed */
+                        Marker storedMarker = entry.getValue();
+                        if (!df.format(storedMarker.getPosition().latitude).equals(df.format(vehicleUpdatedCoords.getCoordinate().getLatitude())) ||
+                                !df.format(storedMarker.getPosition().longitude).equals(df.format(vehicleUpdatedCoords.getCoordinate().getLongitude()))) {
+                            /*Coordinates updated*/
+                            storedMarker.setPosition(vehicleUpdatedCoords.getCoordinate().getLatLng());
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (foundStored) {
+                /*Vehicle found stored - remove from list to new markers*/
+                vehiclesToAdd.remove(entry.getKey());
+            } else {
+                /*Vehicle no longer visible in area - so remove it*/
+                markersToRemove.add(entry.getKey());
+            }
+        }
+
+        /*Delete outdated vehicles*/
+        for (Vehicle vehicle : markersToRemove) {
+            currentMarkers.get(vehicle).remove();
+            currentMarkers.remove(vehicle);
+        }
+
+        /*Request new markers*/
+        if (vehiclesToAdd.size() > 0) {
+            post(new OnRequestNewMarkers(vehiclesToAdd));
+        }
+    }
+
+    private static class AddressProcessor implements Runnable {
 
         public interface VehiclesProcessorCallback {
-            void onProcessCompleted(List<Vehicle> vehiclesList);
+            void onProcessCompleted(Vehicle vehicle);
         }
 
         private SoftReference<Handler> uiHandlerRef;
         private SoftReference<VehiclesProcessorCallback> callbackRef;
         private SoftReference<Geocoder> geocoderWR;
-        private List<VehicleResponse> vehicles;
+        private Vehicle vehicle;
 
-        public VehiclesProcessor(Handler uiHandler, Geocoder geocoder, List<VehicleResponse> vehicles, VehiclesProcessorCallback callback) {
+        public AddressProcessor(Handler uiHandler, Geocoder geocoder, Vehicle vehicle, VehiclesProcessorCallback callback) {
             this.uiHandlerRef = new SoftReference<>(uiHandler);
             this.callbackRef = new SoftReference<>(callback);
             this.geocoderWR = new SoftReference<>(geocoder);
-            this.vehicles = vehicles;
+            this.vehicle = vehicle;
         }
 
         @Override
         public void run() {
-            List<Vehicle> vehiclesModelList = new ArrayList<>();
-            for (VehicleResponse vehicle : vehicles) {
-                Vehicle vehicleModel = vehicle.toModel();
-                vehicleModel.setAddress(getReadableAddress(vehicleModel.getCoordinate().getLatLng()));
-                vehiclesModelList.add(vehicleModel);
-            }
-            Collections.sort(vehiclesModelList, ((o1, o2) -> o1.getHeading().compareTo(o2.getHeading())));
+            vehicle.setAddress(getReadableAddress(vehicle.getCoordinate().getLatLng()));
 
             if (uiHandlerRef.get() != null && callbackRef.get() != null) {
-                uiHandlerRef.get().post(() -> callbackRef.get().onProcessCompleted(vehiclesModelList));
+                uiHandlerRef.get().post(() -> callbackRef.get().onProcessCompleted(vehicle));
             }
         }
 
         private String getReadableAddress(LatLng coordinates) {
-
-            /*Check not collected*/
             if (geocoderWR.get() == null) {
                 return null;
             }
 
-            /*Address generator*/
             try {
                 List<Address> addresses = geocoderWR.get().getFromLocation(coordinates.latitude, coordinates.longitude, 1);
                 return addresses.get(0).getThoroughfare() + "," + addresses.get(0).getFeatureName();

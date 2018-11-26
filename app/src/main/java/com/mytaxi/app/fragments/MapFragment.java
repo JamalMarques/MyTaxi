@@ -87,13 +87,14 @@ public class MapFragment extends BaseFragment<MapContract.Presenter> {
     public void onStart() {
         super.onStart();
         BusProvider.register(presenter);
-
+        presenter.onStart();
     }
 
     @Override
     public void onStop() {
         BusProvider.unregister(presenter);
         super.onStop();
+        presenter.onStop();
     }
 
     @Override
