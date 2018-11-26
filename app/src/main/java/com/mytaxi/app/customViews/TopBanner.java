@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mytaxi.app.R;
@@ -21,6 +22,9 @@ public class TopBanner extends LinearLayout {
     @BindView(R.id.tv_fleet_type) TextView tvFleetType;
     @BindView(R.id.tv_address) TextView tvAddress;
     @BindView(R.id.vehicle_info_layout) ConstraintLayout vehicleInfoLayout;
+    @BindView(R.id.pb_address_loading) ProgressBar pbAddress;
+
+    private Vehicle vehicle;
 
     public TopBanner(Context context) {
         super(context);
@@ -43,7 +47,6 @@ public class TopBanner extends LinearLayout {
     }
 
     private void init(Context context) {
-        /*TODO -- add animation as well!! */
         inflate(context, R.layout.top_banner_layout, this);
 
         ButterKnife.bind(this, this);
@@ -54,12 +57,27 @@ public class TopBanner extends LinearLayout {
     public void setDefaultState() {
         ivTaxiLogo.setVisibility(VISIBLE);
         vehicleInfoLayout.setVisibility(GONE);
+        this.vehicle = null;
     }
 
-    public void setVehicleState(@NonNull Vehicle vehicle) {
+    public void setVehicleState(@NonNull Vehicle vehicle, boolean animate) {
         ivTaxiLogo.setVisibility(GONE);
         tvFleetType.setText(vehicle.getFleetType());
-        tvAddress.setText((vehicle.getAddress() != null) ? vehicle.getAddress() : getContext().getString(R.string.address_not_found_msg));
+
+        if (vehicle.getAddress() != null){
+            tvAddress.setText(vehicle.getAddress());
+            pbAddress.setVisibility(GONE);
+            tvAddress.setVisibility(VISIBLE);
+        }else {
+            tvAddress.setVisibility(GONE);
+            pbAddress.setVisibility(VISIBLE);
+        }
+
         vehicleInfoLayout.setVisibility(VISIBLE);
+        this.vehicle = vehicle;
+    }
+
+    public Vehicle getVehicleShowing() {
+        return vehicle;
     }
 }

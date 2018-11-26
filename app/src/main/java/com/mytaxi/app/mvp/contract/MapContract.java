@@ -2,13 +2,14 @@ package com.mytaxi.app.mvp.contract;
 
 import android.os.Bundle;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.mytaxi.app.models.Vehicle;
 import com.mytaxi.app.mvp.contract.base.PresenterCoreInterface;
 import com.mytaxi.app.mvp.contract.base.RetrofitManager;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MapContract {
 
@@ -34,16 +35,32 @@ public interface MapContract {
 
         void setLoadingVehiclesState();
 
+        Map<Vehicle, Marker> generateMapMarkers(List<Vehicle> newVehicles);
+
+        void animateCameraToMarker(Marker marker);
+
         void setErrorVehiclesState();
 
         LatLngBounds getVisibleRegion();
 
         void showBannerTopDefault();
 
-        void showBannerTopInfo(Vehicle vehicle);
+        void showBannerTopInfo(Vehicle vehicle, boolean animate);
 
         /*Bus events*/
         class OnMapLoaded {/*Nothing to add here*/
+        }
+
+        class OnBottomSheetVehicleClicked {
+            private Vehicle vehicle;
+
+            public OnBottomSheetVehicleClicked(Vehicle vehicle) {
+                this.vehicle = vehicle;
+            }
+
+            public Vehicle getVehicleClicked() {
+                return vehicle;
+            }
         }
 
         class OnCameraMovedByUser {
@@ -72,14 +89,14 @@ public interface MapContract {
         }
 
         class OnMarkerClicked {
-            private Vehicle vehicle;
+            private Marker marker;
 
-            public OnMarkerClicked(Vehicle vehicle) {
-                this.vehicle = vehicle;
+            public OnMarkerClicked(Marker marker) {
+                this.marker = marker;
             }
 
-            public Vehicle getVehicle() {
-                return vehicle;
+            public Marker getMarker() {
+                return marker;
             }
         }
     }
@@ -94,7 +111,7 @@ public interface MapContract {
 
         void onStop();
 
-        void destroy();
+        void onDestroy();
 
         void onSaveInstantState(Bundle bundle);
 
@@ -102,13 +119,33 @@ public interface MapContract {
     }
 
     interface Model extends RetrofitManager {
+        void addVehicles(Map<Vehicle, Marker> newVehiclesMap);
+
+        List<Vehicle> getCurrentVehicles();
+
+        Vehicle getVehicleFromMarker(Marker marker);
+
+        Marker getMarkerFromVehicle(Vehicle vehicle);
+
         void updatePoints(LatLngBounds latLngBounds);
 
-        String getReadableAddress(LatLng coordinates);
+        void obtainReadableAddress(Vehicle vehicle);
 
         LatLngBounds getLatestBounds();
 
         /*Bus events*/
+        class OnRequestNewMarkers {
+            private List<Vehicle> vehicles;
+
+            public OnRequestNewMarkers(List<Vehicle> vehicles) {
+                this.vehicles = vehicles;
+            }
+
+            public List<Vehicle> getVehicles() {
+                return vehicles;
+            }
+        }
+
         class OnVehiclesInAreaSuccess {
 
             private List<Vehicle> vehicles;
@@ -131,6 +168,19 @@ public interface MapContract {
 
             public Throwable getT() {
                 return t;
+            }
+        }
+
+        class OnAddressObtained {
+            private Vehicle vehicle;
+
+            public OnAddressObtained(Vehicle vehicle) {
+                this.vehicle = vehicle;
+            }
+
+            public Vehicle getVehicleUpdated() {
+                return vehicle;
+
             }
         }
     }
