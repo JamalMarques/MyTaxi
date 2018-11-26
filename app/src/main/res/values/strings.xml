@@ -7,5 +7,6 @@
     <string name="sheet_header_msg_error">Vehicles not found</string>
     <string name="sheet_header_msg_loading">Loading vehicles</string>
     <string name="heading">Heading</string>
+    <string name="touch_to_load_address">Touch to get address</string>
 
 </resources>

@@ -25,8 +25,9 @@
             android:id="@+id/tv_vehicle_fleettype"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/medium_font"
+            android:layout_marginTop="@dimen/spacing_small"
             android:gravity="center|top"
+            android:fontFamily="@font/regular_font"
             android:maxLines="1"
             android:text="Taxi"
             android:textColor="@android:color/black"
@@ -37,6 +38,7 @@
             android:id="@+id/tv_heading_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/heading"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -46,10 +48,10 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_marginEnd="8dp"
-            app:srcCompat="@drawable/heading_bg"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_vehicle_fleettype"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_heading_msg"
             app:layout_constraintEnd_toStartOf="@+id/tv_heading_msg"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/tv_heading_msg"
+            app:srcCompat="@drawable/heading_bg" />
 
         <TextView
             android:id="@+id/tv_vehicle_address"
@@ -59,7 +61,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_vehicle_fleettype"
-            android:text="Address name"/>
+            android:text="@string/touch_to_load_address"/>
 
     </android.support.constraint.ConstraintLayout>
 

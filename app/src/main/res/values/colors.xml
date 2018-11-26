@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#666323</color>
     <color name="colorAccent">#000000</color>
 
+    <color name="text_color_default">#1b1b1b</color>
+
     <color name="color_bg_sheet">#f5cd3a</color>
 
     <!-- Gray scale -->
@@ -21,5 +23,11 @@
     <color name="heading_level_1">#0cae01</color>
     <color name="heading_level_2">#d9ad00</color>
     <color name="heading_level_3">#da3d3d</color>
+
+    <!-- Bottom Sheet -->
+    <color name="state_selected_bg">#e9e9e9</color>
+    <color name="state_not_selected_bg">#FFFFFF</color>
+    <color name="not_address_color">@color/gray3_H</color>
+    <color name="address_color">@color/gray1_H</color>
 
 </resources>

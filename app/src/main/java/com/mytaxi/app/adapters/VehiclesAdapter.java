@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.ViewHo
     private final int HEADING_LEVEL_2_MAX = 200;
 
     private Context context;
+    private int positionSelected = -1;
     private int lastPositionAnimated = -1;
     private RecyclerViewListener<Vehicle> listener = (view, position, user) -> { /*Empty*/};
 
@@ -52,6 +54,19 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    public int getItemPosition(Vehicle vehicle) {
+        for (int i = 0; i < vehiclesList.size(); i++) {
+            if (vehiclesList.get(i).getId() == vehicle.getId()) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public void setSelectedItem(int position) {
+        this.positionSelected = position;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -65,7 +80,16 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.ViewHo
         Vehicle vehicle = vehiclesList.get(position);
 
         holder.tvVehicleFleetType.setText(vehicle.getFleetType());
-        holder.tvAddress.setText(vehicle.getAddress());
+
+        /*Address*/
+        holder.tvAddress.setText((vehicle.getAddress() == null) ? context.getString(R.string.touch_to_load_address) : vehicle.getAddress());
+        holder.tvAddress.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                context.getResources().getDimension((vehicle.getAddress() == null) ? R.dimen.not_address_size : R.dimen.address_size));
+        holder.tvAddress.setTextColor(ContextCompat.getColor(context, (vehicle.getAddress() == null) ? R.color.not_address_color : R.color.address_color));
+
+        /*Selected state*/
+        @ColorRes int cardColorState = (positionSelected == position) ? R.color.state_selected_bg : R.color.state_not_selected_bg;
+        holder.cardLayout.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, cardColorState)));
 
         /*Heading*/
         Double heading = vehicle.getHeading();
@@ -99,8 +123,10 @@ public class VehiclesAdapter extends RecyclerView.Adapter<VehiclesAdapter.ViewHo
             tvAddress = itemView.findViewById(R.id.tv_vehicle_address);
 
             cardLayout.setOnClickListener(v -> {
-                if (listener != null)
+                if (listener != null) {
+                    positionSelected = getLayoutPosition();
                     listener.recyclerViewOnItemClickListener(v, getLayoutPosition(), vehiclesList.get(getLayoutPosition()));
+                }
             });
         }
 

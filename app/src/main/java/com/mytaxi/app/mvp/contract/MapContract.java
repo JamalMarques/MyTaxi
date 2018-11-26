@@ -35,13 +35,17 @@ public interface MapContract {
 
         void setLoadingVehiclesState();
 
+        void notifyVehicleDataChanged();
+
         Map<Vehicle, Marker> generateMapMarkers(List<Vehicle> newVehicles);
 
         void animateCameraToMarker(Marker marker);
 
+        void selectVehicleSheetItem(Vehicle vehicle);
+
         void setErrorVehiclesState();
 
-        void showBannerTopDefault();
+        void showTopBannerDefaultState();
 
         void showBannerTopInfo(Vehicle vehicle, boolean animate);
 
@@ -118,6 +122,8 @@ public interface MapContract {
         void obtainReadableAddress(Vehicle vehicle);
 
         LatLngBounds getLatestBounds();
+
+        boolean shouldUpdatePoints(LatLngBounds latLngBounds);
 
         /*Bus events*/
         class OnRequestNewMarkers {

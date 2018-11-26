@@ -19,6 +19,7 @@
     <!--Text Style Base-->
     <style name="common_text_style">
         <item name="android:fontFamily">@font/regular_font</item>
+        <item name="android:textColor">@color/text_color_default</item>
     </style>
 
 </resources>

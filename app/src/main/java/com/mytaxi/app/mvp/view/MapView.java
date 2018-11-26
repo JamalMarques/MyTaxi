@@ -55,7 +55,7 @@ public class MapView extends BaseView implements MapContract.View {
     private void prepareBottomSheet() {
         bottomSheet.setOnHeaderClicked(v ->
                 bottomSheet.setSheetState((bottomSheet.getSheetState() == BottomSheetBehavior.STATE_COLLAPSED) ?
-                BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
+                        BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
 
         bottomSheet.setOnListItemClicked((view, position, vehicle) -> post(new OnBottomSheetVehicleClicked(vehicle)));
     }
@@ -145,6 +145,11 @@ public class MapView extends BaseView implements MapContract.View {
     }
 
     @Override
+    public void notifyVehicleDataChanged() {
+        bottomSheet.notifyDataSetChanged();
+    }
+
+    @Override
     public Map<Vehicle, Marker> generateMapMarkers(List<Vehicle> newVehicles) {
         /*Adding markers*/
         HashMap<Vehicle, Marker> map = new HashMap<>();
@@ -168,12 +173,18 @@ public class MapView extends BaseView implements MapContract.View {
     }
 
     @Override
+    public void selectVehicleSheetItem(Vehicle vehicle) {
+        bottomSheet.setItemSelected(vehicle);
+    }
+
+    @Override
     public void setErrorVehiclesState() {
+        topBanner.setDefaultState();
         bottomSheet.setDataState(VehicleBottomSheet.DATA_STATE_ERROR);
     }
 
     @Override
-    public void showBannerTopDefault() {
+    public void showTopBannerDefaultState() {
         topBanner.setDefaultState();
     }
 
@@ -181,5 +192,4 @@ public class MapView extends BaseView implements MapContract.View {
     public void showBannerTopInfo(Vehicle vehicle, boolean animate) {
         topBanner.setVehicleState(vehicle, animate);
     }
-
 }

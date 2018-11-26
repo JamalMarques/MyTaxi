@@ -34,6 +34,8 @@
     <dimen name="bottom_sheet_elevation">5dp</dimen>
     <dimen name="item_card_corner_radius">8dp</dimen>
     <dimen name="item_card_elevation">3dp</dimen>
-    <dimen name="sheet_loading_anim_size">500dp</dimen>
+    <dimen name="sheet_loading_anim_size">200dp</dimen>
+    <dimen name="not_address_size">@dimen/text_size_small</dimen>
+    <dimen name="address_size">@dimen/text_size_normal</dimen>
 
 </resources>

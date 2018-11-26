@@ -24,6 +24,7 @@ public class VehicleBottomSheet extends LinearLayout {
 
     private TextView tvHeader;
     private RecyclerView recyclerView;
+    private LinearLayoutManager llm;
     private VehiclesAdapter adapter;
     private LinearLayout sheetLayout, sheetHeader, errorLayout;
     private BottomSheetBehavior bottomSheetBehavior;
@@ -73,7 +74,8 @@ public class VehicleBottomSheet extends LinearLayout {
 
         /*Recycler setup*/
         recyclerView = findViewById(R.id.rv_vehicles);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        llm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(llm);
         adapter = new VehiclesAdapter(context, new ArrayList<>());
         recyclerView.setAdapter(adapter);
     }
@@ -83,12 +85,18 @@ public class VehicleBottomSheet extends LinearLayout {
         setDataState((vehiclesList.size() > 0) ? DATA_STATE_POPULATED : DATA_STATE_ERROR);
     }
 
-    public void setRecyclerListener(@NonNull RecyclerViewListener<Vehicle> listener) {
-        adapter.setListener(listener);
+    public void notifyDataSetChanged(){
+        adapter.notifyDataSetChanged();
     }
 
-    public @BottomSheetBehavior.State
-    int getSheetState() {
+    public void setItemSelected(Vehicle vehicle){
+        int position = adapter.getItemPosition(vehicle);
+        llm.scrollToPosition(position);
+        adapter.setSelectedItem(position);
+    }
+
+    @BottomSheetBehavior.State
+    public int getSheetState() {
         return bottomSheetBehavior.getState();
     }
 

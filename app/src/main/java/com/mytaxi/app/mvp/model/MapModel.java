@@ -65,6 +65,20 @@ public class MapModel extends BaseModel implements MapContract.Model {
     }
 
     /**
+     * Only update points if the currently bounds are outside of the area
+     * previously loaded and in cache in order to save internet resources
+     *
+     * @param latLngBounds camera updated bounds.
+     */
+    @Override
+    public boolean shouldUpdatePoints(LatLngBounds latLngBounds) {
+        return latestBounds.northeast.latitude < latLngBounds.northeast.latitude ||
+                latestBounds.northeast.longitude < latLngBounds.northeast.longitude ||
+                latestBounds.southwest.latitude > latLngBounds.southwest.latitude ||
+                latestBounds.southwest.longitude > latLngBounds.southwest.longitude;
+    }
+
+    /**
      * Adding new markers to the map
      *
      * @param newVehiclesMap new markers with it's markers associated
@@ -102,7 +116,7 @@ public class MapModel extends BaseModel implements MapContract.Model {
 
     @Override
     public void obtainReadableAddress(Vehicle vehicle) {
-        if (addressCallRunning != null && !addressCallRunning.isDone()){
+        if (addressCallRunning != null && !addressCallRunning.isDone()) {
             addressCallRunning.cancel(true);
         }
 
@@ -189,7 +203,10 @@ public class MapModel extends BaseModel implements MapContract.Model {
 
         /*Delete outdated vehicles*/
         for (Vehicle vehicle : markersToRemove) {
-            currentMarkers.get(vehicle).remove();
+            Marker marker = currentMarkers.get(vehicle);
+            if (marker != null) {
+                marker.remove();
+            }
             currentMarkers.remove(vehicle);
         }
 

@@ -56,9 +56,11 @@ public class MapPresenter extends BasePresenter<MapContract.View, MapContract.Mo
 
     @Subscribe
     public void onCameraMovedByUser(MapContract.View.OnCameraMovedByUser event) {
-        model.updatePoints(event.getNewBounds());
-        view.showBannerTopDefault();
-        view.setLoadingVehiclesState();
+        if (model.shouldUpdatePoints(event.getNewBounds())) {
+            model.updatePoints(event.getNewBounds());
+            view.setLoadingVehiclesState();
+            view.showTopBannerDefaultState();
+        }
     }
 
     @Subscribe
@@ -68,11 +70,13 @@ public class MapPresenter extends BasePresenter<MapContract.View, MapContract.Mo
             model.obtainReadableAddress(vehicle);
         }
         view.showBannerTopInfo(vehicle, true);
+        view.selectVehicleSheetItem(vehicle);
     }
 
     @Subscribe
     public void onAddressObtained(MapContract.Model.OnAddressObtained event) {
         view.showBannerTopInfo(event.getVehicleUpdated(), false);
+        view.notifyVehicleDataChanged();
     }
 
     @Subscribe
@@ -98,6 +102,6 @@ public class MapPresenter extends BasePresenter<MapContract.View, MapContract.Mo
 
     @Subscribe
     public void onVehicleInAreaFail(MapContract.Model.OnVehiclesInAreaFail event) {
-        /*TODO - check what to do here*/
+        view.setErrorVehiclesState();
     }
 }
