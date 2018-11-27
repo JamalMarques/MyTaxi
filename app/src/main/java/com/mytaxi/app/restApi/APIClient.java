@@ -33,7 +33,6 @@ public class APIClient {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             httpClient.addInterceptor(interceptor);
         }
-        /*Add more configurations if needed*/
         return httpClient.build();
     }
 }

@@ -8,16 +8,8 @@
 
     <color name="color_bg_sheet">#f5cd3a</color>
 
-    <!-- Gray scale -->
-    <color name="gray1_H">#484641</color>
-    <color name="gray2_H">#484641</color>
-    <color name="gray3_H">#676767</color>
-    <color name="gray4_H">#D5D5D2</color>
-    <color name="gray5_H">#EAEAEA</color>
-    <color name="gray6_H">#EEEEEE</color>
-    <color name="gray7_H">#D5D5D5</color>
-    <color name="gray8_H">#AAAAAA</color>
-    <color name="gray9_H">#999999</color>
+    <!-- Text colors -->
+    <color name="text_color_gray_1">#484641</color>
 
     <!-- Vehicle headings -->
     <color name="heading_level_1">#0cae01</color>
@@ -27,7 +19,7 @@
     <!-- Bottom Sheet -->
     <color name="state_selected_bg">#e9e9e9</color>
     <color name="state_not_selected_bg">#FFFFFF</color>
-    <color name="not_address_color">@color/gray3_H</color>
-    <color name="address_color">@color/gray1_H</color>
+    <color name="not_address_color">#676767</color>
+    <color name="address_color">#484641</color>
 
 </resources>

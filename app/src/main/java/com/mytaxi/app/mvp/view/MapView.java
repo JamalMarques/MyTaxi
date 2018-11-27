@@ -1,7 +1,12 @@
 package com.mytaxi.app.mvp.view;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +26,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +37,7 @@ public class MapView extends BaseView implements MapContract.View {
     @BindView(R.id.vehicle_bottom_sheet) VehicleBottomSheet bottomSheet;
     @BindView(R.id.map_view) com.google.android.gms.maps.MapView mapView;
     @BindView(R.id.top_banner) TopBanner topBanner;
+    @BindView(R.id.fb_extra) FloatingActionButton extraBtn;
 
     private GoogleMap googleMap;
     private int lastMovedReason = -1;
@@ -49,8 +57,39 @@ public class MapView extends BaseView implements MapContract.View {
             prepareMapListeners(googleMap);
             post(new OnMapLoaded());
         });
+
+        /*Prepare extra floating button*/
+        prepareExtraButton();
     }
 
+    private void prepareExtraButton() {
+        extraBtn.setOnClickListener(v -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            alertDialogBuilder.setView(R.layout.extra_dialog_layout);
+            alertDialogBuilder.setPositiveButton(R.string.extra_possitive_text, null);
+            alertDialogBuilder.show();
+
+            Animation fadeOutAnim = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out);
+            fadeOutAnim.setDuration(500);
+            fadeOutAnim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    extraBtn.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            extraBtn.startAnimation(fadeOutAnim);
+        });
+    }
 
     private void prepareBottomSheet() {
         bottomSheet.setOnHeaderClicked(v ->
@@ -191,5 +230,45 @@ public class MapView extends BaseView implements MapContract.View {
     @Override
     public void showBannerTopInfo(Vehicle vehicle, boolean animate) {
         topBanner.setVehicleState(vehicle, animate);
+    }
+
+    @Override
+    public void showExtraButton() {
+        if (extraBtn.getVisibility() == View.GONE) {
+            Animation fadeInAnim = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in);
+            fadeInAnim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    extraBtn.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            fadeInAnim.setDuration(500);
+            extraBtn.startAnimation(fadeInAnim);
+        }
+    }
+
+    /**
+     * Expand and collapse the bottom sheet to teach the user that the bottom view is
+     * a expand-collapse view
+     */
+    @Override
+    public void showFirstTimeIntro() {
+        bottomSheet.setSheetState(BottomSheetBehavior.STATE_EXPANDED);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                bottomSheet.setSheetState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        }, 3000);
     }
 }

@@ -20,13 +20,6 @@
     <dimen name="spacing_medium">15dp</dimen>
     <dimen name="spacing_medium_2">17dp</dimen>
     <dimen name="spacing_large">20dp</dimen>
-    <dimen name="spacing_large_2">22dp</dimen>
-    <dimen name="spacing_larger">25dp</dimen>
-    <dimen name="spacing_extra_large">30dp</dimen>
-    <dimen name="spacing_huge">35dp</dimen>
-    <dimen name="spacing_huge_2">40dp</dimen>
-    <dimen name="spacing_ginormous">50dp</dimen>
-    <dimen name="spacing_extra_ginormous">55dp</dimen>
 
     <!-- Bottom sheet -->
     <dimen name="bottom_sheet_expanded_height">340dp</dimen>

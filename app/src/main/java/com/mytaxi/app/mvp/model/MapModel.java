@@ -32,6 +32,9 @@ import retrofit2.Response;
 
 public class MapModel extends BaseModel implements MapContract.Model {
 
+    private final int ADVICE_AT_NUMBER_OF_ADDRESS = 5;
+    private int numberOfAddressRequested = 0;
+
     private LatLngBounds latestBounds;
     private HashMap<Vehicle, Marker> currentMarkers = new HashMap<>();
     private Geocoder geocoder;
@@ -126,6 +129,9 @@ public class MapModel extends BaseModel implements MapContract.Model {
             addressCallRunning = null;
             post(new OnAddressObtained(vehicle1));
         }));
+
+        /* Address request count just for credits button*/
+        addAndCheckAddressCount();
     }
 
     private void getVehiclesInArea(LatLngBounds latLngBounds) {
@@ -254,6 +260,13 @@ public class MapModel extends BaseModel implements MapContract.Model {
             } catch (IOException e) {
                 return null;
             }
+        }
+    }
+
+    private void addAndCheckAddressCount() {
+        numberOfAddressRequested++;
+        if (numberOfAddressRequested == ADVICE_AT_NUMBER_OF_ADDRESS) {
+            post(new OnAddressTargetCountAcomplished());
         }
     }
 }

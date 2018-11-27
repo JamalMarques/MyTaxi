@@ -52,6 +52,7 @@ public class MapPresenter extends BasePresenter<MapContract.View, MapContract.Mo
     @Subscribe
     public void onMapLoaded(MapContract.View.OnMapLoaded event) {
         view.setVisibleRegion(model.getLatestBounds());
+        view.showFirstTimeIntro();
     }
 
     @Subscribe
@@ -103,5 +104,10 @@ public class MapPresenter extends BasePresenter<MapContract.View, MapContract.Mo
     @Subscribe
     public void onVehicleInAreaFail(MapContract.Model.OnVehiclesInAreaFail event) {
         view.setErrorVehiclesState();
+    }
+
+    @Subscribe
+    public void onAddressCountAcomplished(MapContract.Model.OnAddressTargetCountAcomplished event) {
+        view.showExtraButton();
     }
 }

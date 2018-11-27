@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mytaxi.app">
 
+    <!-- Proudly coded by Yamil Marques de Mello.
+
+         For doubts or suggestions:
+
+         Email: yamamarques@gmail.com
+         Linkedin: https://www.linkedin.com/in/yamilmarques/
+         -->
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 

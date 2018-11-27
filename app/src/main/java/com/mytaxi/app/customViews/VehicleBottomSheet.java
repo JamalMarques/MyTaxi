@@ -78,6 +78,9 @@ public class VehicleBottomSheet extends LinearLayout {
         recyclerView.setLayoutManager(llm);
         adapter = new VehiclesAdapter(context, new ArrayList<>());
         recyclerView.setAdapter(adapter);
+
+        /*Init state*/
+        setSheetState(DATA_STATE_LOADING);
     }
 
     public void refreshVehicles(@NonNull List<Vehicle> vehiclesList) {

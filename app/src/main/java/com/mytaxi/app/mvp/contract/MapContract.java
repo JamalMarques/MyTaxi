@@ -49,6 +49,10 @@ public interface MapContract {
 
         void showBannerTopInfo(Vehicle vehicle, boolean animate);
 
+        void showExtraButton();
+
+        void showFirstTimeIntro();
+
         /*Bus events*/
         class OnMapLoaded {/*Nothing to add here*/
         }
@@ -174,6 +178,10 @@ public interface MapContract {
                 return vehicle;
 
             }
+        }
+
+        class OnAddressTargetCountAcomplished {
+            /*Nothing to add here*/
         }
     }
 }

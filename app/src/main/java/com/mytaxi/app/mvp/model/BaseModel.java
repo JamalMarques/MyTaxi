@@ -53,15 +53,6 @@ public class BaseModel implements RetrofitManager {
         cancellableRetrofitCalls.add(call);
     }
 
-
-    /**
-     * Call API endpoint with retrofit
-     * Cancellable option enabled as default value
-     */
-    protected void callService(Call retrofitCall, Callback callback) {
-        callService(retrofitCall, callback, true);
-    }
-
     /**
      * Call API endpoint with retrofit
      *

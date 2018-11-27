@@ -8,5 +8,12 @@
     <string name="sheet_header_msg_loading">Loading vehicles</string>
     <string name="heading">Heading</string>
     <string name="touch_to_load_address">Touch to get address</string>
+    <string name="extra_possitive_text">Ok</string>
+    <string name="extra_title">This app was proudly coded by:</string>
+    <string name="my_name">Yamil Marques de Mello</string>
+    <string name="email">Email:</string>
+    <string name="my_email">yamamarques@gmail.com</string>
+    <string name="linkedin">Linkedin:</string>
+    <string name="my_linkedin">linkedin.com/in/yamilmarques/</string>
 
 </resources>

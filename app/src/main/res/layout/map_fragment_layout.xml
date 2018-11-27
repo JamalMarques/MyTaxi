@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white">
 
     <RelativeLayout
@@ -20,6 +21,21 @@
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/spacing_small" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fb_extra"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:borderWidth="0dp"
+            android:src="@drawable/info_icon"
+            android:backgroundTint="@color/color_bg_sheet"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_medium"
+            app:rippleColor="@color/colorPrimaryDark"
+            android:elevation="10dp"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
